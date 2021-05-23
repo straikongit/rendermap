@@ -5,9 +5,7 @@ import (
 	"image"
 	"io/ioutil"
 	"time"
-
 	"github.com/hajimehoshi/ebiten/v2"
-
 	"github.com/fogleman/gg"
 	geojson "github.com/paulmach/go.geojson"
 )
