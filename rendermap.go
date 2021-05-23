@@ -57,19 +57,7 @@ func initMap() geojson.FeatureCollection {
 	RI.Counter = 12
 	RI.Update()
 
-	//FileName = "export_velba.geojson"
-	//FileName = "export_velba_total.geojson"
-	//file, err := ioutil.ReadFile("export_springe.geojson")
-	//FileName = "export_harz.geojson"
-	//FileName = "export_süntel_total.geojson"
 	FileName = "data/velba.geojson"
-	//FileName = "export_toledo.geojson"
-	//FileName = "test.json"
-	//FileName = "export_steinhude.geojson"
-	//FileName = "export_deister_total.geojson"
-	//file, err := ioutil.ReadFile("export_deister.geojson")
-	//file, err := ioutil.ReadFile("export.geojson")
-	//file, err := ioutil.ReadFile("export_benther.geojson")
 	file, err := ioutil.ReadFile(FileName)
 	if err != nil {
 		fmt.Println("File indutten", err)
@@ -77,7 +65,6 @@ func initMap() geojson.FeatureCollection {
 	}
 	fc, err := geojson.UnmarshalFeatureCollection(file)
 
-	//fc, err := geojson.UnmarshalFeatureCollection([]byte(file))
 	if err != nil {
 		fmt.Print("should unmarshal feature collection without issue ")
 		panic(err)
@@ -93,11 +80,6 @@ func initMap() geojson.FeatureCollection {
 
 	for i, _ := range fc.Features {
 		f := fc.Features[i]
-		//tags:=mapTags(f.Properties["tags"])
-
-		//for _,tag := range f.Properties["tags"]{
-
-		//	g := f.Geometry
 		switch {
 
 		case f.Properties["natural"] == "water":
@@ -117,8 +99,6 @@ func initMap() geojson.FeatureCollection {
 	return *x
 }
 
-//func makeMap(fc *geojson.FeatureCollection, bb BoundingBox) {
-//func makeMap(w fyne.Window) {
 func makeMap() {
 
 	fc := initMap()
@@ -134,7 +114,6 @@ func makeMap() {
 		fmt.Println("Boundingbox not found")
 		bb = calcBoundingBox(&fc, bb)
 	}
-	//fmt.Println(fc.Features[2])
 	png := PNG{1024, 768}
 	dc := gg.NewContext(int(png.Width), int(png.Height))
 	dc.SetHexColor("fff")
@@ -167,14 +146,6 @@ func makeMap() {
 			typ = "unknown"
 
 		}
-		/*if f.Properties["natural"] == "water" || f.Properties["type"] == "waterway" || f.Properties["water"] != nil || f.Properties["waterway"] != nil {
-			typ = "water"
-		} else if f.Properties["landuse"] == "forest" {
-			typ = "forest"
-		} else {
-			typ = "unknown"
-		}
-		*/
 		switch {
 		case g.IsPolygon():
 			for k, _ := range g.Polygon {
@@ -197,10 +168,7 @@ func makeMap() {
 			}
 		}
 
-		//fmt.Println(g)
 		fmt.Printf("feature %d from %d rendered \n", i+1, len(fc.Features))
-		//if g.Type == "Polygon" {
-		//dc.Push()
 		m := image.Image(dc.Image())
 		RI.Counter = 1
 		RI.Image = m
@@ -208,12 +176,6 @@ func makeMap() {
 
 	}
 
-	//w.SetContent(canvas.NewImageFromImage(m))
-	//time.Sleep(100 * time.Millisecond)
-	//	dc.SetFillRule(gg.FillRuleEvenOdd)
-	//	dc.SetFillRule(gg.FillRuleWinding)
-	//dc.SetRGBA(0, 1, 0, 0.5)
-	//dc.SetLineWidth(14)
 	dc.SetRGBA(0, 0.5, 0, 0.2)
 	dc.SetLineWidth(1)
 
@@ -226,15 +188,6 @@ func makeMap() {
 	RI.Image = m
 	RI.Update()
 	RI.Status = "newImage"
-	//myCanvas := w.Show()
-	//myCanvas.Image = dc.Image
-	//rect := image.Rect(0, 0, 255, 255)
-	//myImage := image.NewRGBA(rect)
-
-	//im := Image{myImage}
-	//w.SetContent(canvas.NewImageFromImage(im))
-	//w.SetContent(canvas.NewImageFromFile(filename))
-	//	w.SetContent(canvas.NewImageFromImage(m))
 }
 
 func renderGeo(g *geojson.Geometry, geo [][]float64, dc *gg.Context, bb *BoundingBox, png PNG, typ string) {
@@ -254,15 +207,12 @@ func renderGeo(g *geojson.Geometry, geo [][]float64, dc *gg.Context, bb *Boundin
 	for j, _ := range geo { //[pol] {
 
 		max := (bb.MaxLon - bb.MinLon)
-		//lon := max - (bb.MaxLon - g.Polygon[pol][j][1])
 		lon := (bb.MaxLon - geo[j][1])
 		p.X = lon / max * png.Width
 
 		max = (bb.MaxLat - bb.MinLat)
 		lat := (max - (bb.MaxLat - geo[j][0]))
 		p.Y = lat / max * png.Height
-		//fmt.Println(pos)
-		//		fmt.Println(p)
 
 		dc.LineTo(p.Y, p.X)
 	}
@@ -280,31 +230,16 @@ func renderGeo(g *geojson.Geometry, geo [][]float64, dc *gg.Context, bb *Boundin
 		dc.SetFillRule(gg.FillRuleWinding)
 		dc.SetLineWidth(2)
 		dc.Stroke()
-		//dc.Stroke()
-		//dc.SavePNG(filename)
-		//dc.Pop()
 	}
 	m := image.Image(dc.Image())
 	RI.Image = m
 	time.Sleep(10 * time.Millisecond)
-	/*
-
-		m := image.Image(dc.Image())
-		filename := fmt.Sprint("data/outtmp.png")
-		dc.SavePNG(filename)
-		RI.Counter++
-		RI.Image = m
-		RI.Update()
-		RI.Status = "newImage"
-	*/
 }
 
 func calcBoundingBox(fc *geojson.FeatureCollection, bb BoundingBox) BoundingBox {
-	//fmt.Println(fc.Features[2])
 	for i, _ := range fc.Features {
 		f := fc.Features[i]
 		g := f.Geometry
-		//	fmt.Println(g)
 		if g.Type == "MultiPolygon" {
 			fmt.Println(g.MultiPolygon[0][0][0])
 			for k, _ := range g.MultiPolygon {
@@ -327,12 +262,6 @@ func calcBoundingBox(fc *geojson.FeatureCollection, bb BoundingBox) BoundingBox 
 		}
 
 	}
-	/*
-		bb.MinLat = 2
-		bb.MinLon = 11
-		bb.MaxLat = 3
-		bb.MaxLon = 12
-	*/
 	fmt.Println("BB")
 	fmt.Println(bb)
 	return bb
@@ -356,12 +285,6 @@ func setMinMaxLonLat(coordinates [][]float64, bb *BoundingBox) {
 
 }
 
-/*
-func RenderMap(Width float64, Height float64, Mapname string) string {
-	s := Mapname
-	return fmt.Sprintf(s)
-}
-*/
 type Game struct{}
 
 // Update proceeds the game state.
@@ -385,23 +308,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	case "init":
 		RI.Status = "waiting"
 		go makeMap()
-		//ebitMapImage, _, err = ebitenutil.NewImageFromFile("data/outtmp.png")
 		RI.Status = "newImage"
 	case "newImage":
 		RI.Status = "waiting"
-		//		RI.Status = "waiting"
-		//op := &ebiten.DrawImageOptions{}
-		//op.GeoM.Translate(0, 0)
 
 		if err != nil {
 			fmt.Println(err)
 		}
 	}
 	if RI.Image != nil {
-		//ebitMapImage = ebiten.NewImageFromImage(RI.Image)
 		screen.DrawImage(ebiten.NewImageFromImage(RI.Image), nil)
-		//screen.DrawImage(ebitMapImage, op)
-		//		fmt.Println("Rendered image ", RI.Counter)
 	}
 }
 
@@ -412,7 +328,6 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	//ebiten
 	game := &Game{}
 	// Sepcify the window size as you like. Here, a doulbed size is specified.
 	ebiten.SetWindowSize(1024, 768)
@@ -424,11 +339,4 @@ func main() {
 		fmt.Println(err)
 	}
 
-	/*
-		   a := app.New()
-		   	w := a.NewWindow("map")
-		   	w.Resize(fyne.NewSize(1000, 1000))
-		go makeMap(w)
-	*/
-	//w.ShowAndRun()
 }
