@@ -6,16 +6,10 @@ import (
 	"io/ioutil"
 	"time"
 
-	//"farni.com/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/fogleman/gg"
 	geojson "github.com/paulmach/go.geojson"
-	//	"time"
-	//	"fyne.io/fyne/v2"
-	//	"fyne.io/fyne/v2/app"
-	//	"fyne.io/fyne/v2/canvas"
-	//	"fyne.io/fyne/v2/canvas"
 )
 
 type Image struct {
