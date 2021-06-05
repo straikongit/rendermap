@@ -34,7 +34,7 @@ type PNG struct {
 var FileName string
 
 type RenderImage struct {
-	Counter int
+	//Counter int
 	Status  string
 	Image   image.Image
 }
@@ -47,7 +47,7 @@ func (r RenderImage) Update() {
 var RI RenderImage
 
 func initMap() geojson.FeatureCollection {
-	RI.Counter = 12
+//	RI.Counter = 12
 	RI.Update()
 
 	file, err := ioutil.ReadFile(FileName)
@@ -106,7 +106,8 @@ func makeMap() {
 		fmt.Println("Boundingbox not found")
 		bb = calcBoundingBox(&fc, bb)
 	}
-	png := PNG{1024, 768}
+	//png := PNG{2048, 1536}
+	png := PNG{1024,768}
 	dc := gg.NewContext(int(png.Width), int(png.Height))
 	dc.SetHexColor("fff")
 	dc.Clear()
@@ -177,7 +178,7 @@ func makeMap() {
 
 		fmt.Printf("feature %d from %d rendered \n", i+1, len(fc.Features))
 		m := image.Image(dc.Image())
-		RI.Counter = 1
+		//RI.Counter = 1
 		RI.Image = m
 		RI.Update()
 
@@ -191,7 +192,7 @@ func makeMap() {
 	dc.SavePNG(filename)
 
 	m := image.Image(dc.Image())
-	RI.Counter++
+	//RI.Counter++
 	RI.Image = m
 	RI.Update()
 	RI.Status = "newImage"
@@ -326,6 +327,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		if err != nil {
 			fmt.Println(err)
 		}
+
 	}
 	if RI.Image != nil {
 		screen.DrawImage(ebiten.NewImageFromImage(RI.Image), nil)
@@ -335,13 +337,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	//return 2048,1536
 	return 1024, 768
 }
 
 func main() {
-	FileName = "data/velba1.geojson"
+	FileName = "../tmp/suentel.geojson"
+	//FileName = "data/velba1.geojson"
 	game := &Game{}
 	ebiten.SetWindowSize(1024, 768)
+	//ebiten.SetWindowSize(2048, 1536)
 	ebiten.SetWindowTitle("drawmap")
 	ebiten.SetMaxTPS(1)
 	// Call ebiten.RunGame to start your game loop.
