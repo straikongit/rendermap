@@ -324,10 +324,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	//FileName = "data/velba.geojson"
-	FileName = "../tmp/suentel.geojson"
+	FileName = "data/velba.geojson"
 	game := &Game{}
-	// Sepcify the window size as you like. Here, a doulbed size is specified.
 	ebiten.SetWindowSize(1024, 768)
 	ebiten.SetWindowTitle("drawmap")
 	ebiten.SetMaxTPS(1)
