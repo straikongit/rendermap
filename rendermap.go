@@ -110,13 +110,18 @@ func makeMap() {
 	dc := gg.NewContext(int(png.Width), int(png.Height))
 	dc.SetHexColor("fff")
 	dc.Clear()
+	type landType struct {
+		g   *geojson.Geometry
+		typ string
+	}
+	var gWater []landType
+	var gForest []landType
 
+	var typ string
 	for i, _ := range fc.Features {
 		f := fc.Features[i]
-
 		g := f.Geometry
 
-		var typ string
 		/*
 			if f.Properties["name"]=="Waldkaterbach"{
 				fmt.Println("Waldkaterbach")
@@ -125,19 +130,29 @@ func makeMap() {
 		switch {
 
 		case f.Properties["natural"] == "water":
-			typ = "water"
+			t := landType{g, "water"}
+			gWater = append(gWater,t)
 		case f.Properties["type"] == "waterway":
-			typ = "water"
+			t := landType{g, "water"}
+			gWater = append(gWater,t)
 		case f.Properties["water"] != nil:
-			typ = "water"
+			t := landType{g, "water"}
+			gWater = append(gWater,t)
 		case f.Properties["waterway"] != nil:
-			typ = "water"
+			t := landType{g, "water"}
+			gWater = append(gWater,t)
 		case f.Properties["landuse"] == "forest": // ||  f.Properties["tags"].data["landuse"] == "forest"  {
-			typ = "forest"
+			t := landType{g, "forest"}
+			gForest = append(gForest,t)
 		default:
 			typ = "unknown"
 
 		}
+	}
+	gForestWater := append(gForest, gWater...)
+	for _, t := range gForestWater {
+		g:=t.g
+		typ = t.typ
 		switch {
 		case g.IsPolygon():
 			for k, _ := range g.Polygon {
@@ -324,7 +339,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	FileName = "data/velba.geojson"
+	FileName = "data/velba1.geojson"
 	game := &Game{}
 	ebiten.SetWindowSize(1024, 768)
 	ebiten.SetWindowTitle("drawmap")
