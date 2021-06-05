@@ -342,8 +342,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	FileName = "../tmp/suentel.geojson"
-	//FileName = "data/velba1.geojson"
+	FileName = "data/velba1.geojson"
 	game := &Game{}
 	ebiten.SetWindowSize(1024, 768)
 	//ebiten.SetWindowSize(2048, 1536)
