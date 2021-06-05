@@ -5,8 +5,9 @@ import (
 	"image"
 	"io/ioutil"
 	"time"
-	"github.com/hajimehoshi/ebiten/v2"
+
 	"github.com/fogleman/gg"
+	"github.com/hajimehoshi/ebiten/v2"
 	geojson "github.com/paulmach/go.geojson"
 )
 
@@ -49,7 +50,6 @@ func initMap() geojson.FeatureCollection {
 	RI.Counter = 12
 	RI.Update()
 
-	FileName = "data/velba.geojson"
 	file, err := ioutil.ReadFile(FileName)
 	if err != nil {
 		fmt.Println("File indutten", err)
@@ -200,11 +200,11 @@ func renderGeo(g *geojson.Geometry, geo [][]float64, dc *gg.Context, bb *Boundin
 
 		max := (bb.MaxLon - bb.MinLon)
 		lon := (bb.MaxLon - geo[j][1])
-		p.X = lon / max * png.Width
+		p.X = lon / max * png.Height
 
 		max = (bb.MaxLat - bb.MinLat)
 		lat := (max - (bb.MaxLat - geo[j][0]))
-		p.Y = lat / max * png.Height
+		p.Y = lat / max * png.Width
 
 		dc.LineTo(p.Y, p.X)
 	}
@@ -246,11 +246,15 @@ func calcBoundingBox(fc *geojson.FeatureCollection, bb BoundingBox) BoundingBox 
 			for p, _ := range g.Polygon {
 				setMinMaxLonLat(g.Polygon[p], &bb)
 			}
+		}
+		switch g.Type {
+		case "LineString":
+			setMinMaxLonLat(g.LineString, &bb)
 
-			bb.MinLat = bb.MinLat + 0
-			bb.MinLat = bb.MinLat + 0
-			bb.MinLon = bb.MinLon + 0
-
+		case "MultiLineString":
+			for k, _ := range g.MultiLineString {
+				setMinMaxLonLat(g.MultiLineString[k], &bb)
+			}
 		}
 
 	}
@@ -320,6 +324,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
+	//FileName = "data/velba.geojson"
+	FileName = "../tmp/suentel.geojson"
 	game := &Game{}
 	// Sepcify the window size as you like. Here, a doulbed size is specified.
 	ebiten.SetWindowSize(1024, 768)
